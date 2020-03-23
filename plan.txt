@@ -4,45 +4,93 @@ There will be unit test for 3 of the 5 sub parts.
 Project sub-parts:
 
 1. Room: A knowledge container to implement the concept of a single room in a world's grid.
-It will be implemented as a c++ class and will have:
-    - a private attribute,
-    - constructor and
-    - an accessor method
+   It will keep record of every knowledge(state) of a room.
 
-Knowledge will be represented using knowledge terms given during the tutorial session.
-They are:
-        Pit => true if there is pit in the room.
-        Breeze => true if there is breeze in the room.
-        Wumpus => true if there is wumpus in the room.
-        Stink => true if the room stinks.
-        Visited => true if the room is already visited.
-        Gold => true if there is gold in the room.
+   It will be implemented as a c++ class and will have:
+   
+    Attributes:
+        - knowledge
+   
+    Attributes description:
+        knowledge:
+            Container for the knowledge(states) of a room.
+            Knowledge will be represented using knowledge terms given during the tutorial session.
+            They are:
+                    Pit => true if there is pit in the room.
+                    Breeze => true if there is breeze in the room.
+                    Wumpus => true if there is wumpus in the room.
+                    Stench => true if the room stenchs.
+                    Visited => true if the room is already visited.
+                    Glitter => true if there is gold in the room.
 
-- The constructor has no input parameter. It will initialize all the 6 knowledge terms to false(assuming
-  "false" is default value).
+            Can be implemented using c++ map datastructure. Knowledge terms will be used as key
+            and corresponding truth-values will be used as value in the map.
+            Truth-values are the integers -1, 0 and 1, where:
+                -1 implies undetermined (not yet set) truth-value
+                0  implies the boolean "false"
+                1  implies the boolean "true"
+            
+            Note: The reason to use integers is because of the need to set default value to set initially.
+            Setting initial value to "true" or "false" is not advisable because the values make sense.
+            e.g.: setting Wumpus to "true" by default will initialize every new room having a wumpus.
 
-- The attribute is going to be implemented using c++ map datastructure. Knowledge terms will be used as key
-  and corresponding truth-values(boolean) will be used as value in the map.
+    Constructors:
+        - room()
+    
+    Constructor description:
+        room():
+            Initialize all the six knowledge terms to a default value of -1.
 
-- The accessor method is a getter that will take knowledge term as an argument and use it as key to return
-  the truth value of the knowledge term from the private map attribute.
+    Accessors:
+        - get_truth_value(knowledge_term)
+        - get_adjacents()
+
+    Accessors description:
+        get_truth_value(knowledge_term):
+            Getter that use knowledge_term as key to return the truth value of the knowledge_term
+            from the knowledge attribute.
+            It maps truth-value(the integers -1, 0 or 1) of the given knowledge_term to the
+            corresponding values then return:
+                - "NaN" if -1
+                - the boolean "false" if 0
+                - the boolean "true" if 1
+        
+        get_adjacents():
+            Return list of valid adjacent room ids.
+
+- The second accesor method will return list of valid adjacent rooms.
 
 2. World: The actual game world. It will contain the environment and all the components that will build up
    the game world.
    It will be implemented as a c++ class and will have:
 
-   Attributes:
+    Attributes:
         - model
         - grid
         - agent_status
         - wumpus_status
 
     Attributes description:
-        model: 
-        grid: 
+        model:
+            Holds every statment of the world's model in a logical
+            syllogism format (how?).
+            There will be five statments as given in during the tutorial session.
+            It has to have a way to access premis and conclusion of every statment.
+
+        grid:
+            A 4X4 grid of room objects. Can be implemented using 2D array of room objects.
+            
         agent_status:
+            Holds the agent's remaining_arrow, living, current_room_id and 
+            found_gold information.
+            Can be implemented using c++ map.
+            e.g: map<string, int, string, bool, string, pair<int>, string, bool>
+
         wumpus_status:
-    
+            Holds the wumpus' living and room_id.
+            Can be implemented using c++ map.
+            e.g: map<string, bool, string, pair<int>>
+
     Accessors:
         - grid_init()
         - get_model()
@@ -54,13 +102,67 @@ They are:
 
     Accessors description:
         grid_init():
-        get_model():
-        get_grid():
-        get_room(room_id):
-        get_agent_status():
-        get_wumpus_status():
-        kill_wumpus_at(room_id):
+            Initialize the grid with random knowledge set to the rooms.
+            It has to place the wumpus, the 3 pits and the gold at randomly selected rooms.
+            Then it will set truth values to the other rooms based on the random setup.
+            It will place the agent at room (1,1).
 
+        get_model():
+            Returns copy of the model attribute.
+
+        get_grid():
+            Return copy of the grid attribute. But, it first checks
+            the type of the object calling this function. It only 
+            responds to calls from the user interface object and have
+            to deny calls made from the agent object.
+
+        get_room(room_id):
+            Return copy of the room object at the given room_id from the grid. It first cross
+            checks validity of this request before returning value. A request is valid if the
+            room given by the room_id and agent_status.current_room are neighbours (i.e.: the
+            agent can move from current room to the room given by room_id).
+
+            It's assumed that the agent calls this function after it moved to
+            the room with the specified room_id. So, this function will also
+            set the current room value of the agent_status attribute to room_id.
+            
+        get_agent_status():
+            Return copy of the agent_status attribute.
+            It will be used by the user interface object.
+            Note: the function doesn't need to check the type of the caller since
+            the information disclosed is not sensitive.
+
+        get_wumpus_status():
+            Return copy of the wumpus_status attribute.
+            It will be used by the user interface object.
+            Note: the function doesn't need to check the type of the caller since
+            the information disclosed is not sensitive.
+
+        kill_wumpus_at(room_id):
+            Kills the wumpus if it is found in the given room_id and update wumpus_status
+            and agent_status.
+            Returns "true" if the wumpus is found and killed
+                    "false" if the wumpus is not in the given room. 
+            It will be used by the agent object.
+
+            Killing is done based on this pseudocode:
+
+                wumpus_room = grid.get_room(room_id) // get the room object at room_id
+                
+                // if there is wumpus in the room and the agent has arrow to use
+                if(wumpus_room.get(wumpus) and agent_status.remaining_arrow>0) { 
+                    wumpus_room.set(wumpus, false); // change the truth-value to "false"
+                    wumpus_status.remaining_life = 0; // record that the wumpus is dead
+                    agent_status.remaining_arrow--; // decrement the remaining_arrow
+
+                    return true
+                }
+                
+                else { // if there is no wumpus in the room
+                    agent_status.remaining_arrow--; // decrement the remaining_arrow
+                    return false
+                }
+ 
 3. Agent: The intelligent player that move around in the world to get the gold while
    escaping from being eaten by the wumpus and if possible kill it. In addition it will 
    also make decision to avoid falling into a pit.
@@ -78,51 +180,178 @@ They are:
         - ok_rooms
 
     Attributes description:
-        model: 
-        grid: 
+        model:
+            copy of the world's model attribute.
+
+        grid:
+            A 4X4 grid of room objects. Can be implemented using 2D array of room objects.
+            It'll be filled in using the dicisions the agent make. And the aim is to fill it
+            up with same knowledge as the grid of the world.
+            
         agent_status:
+            Holds the agent's remaining_arrow, living, current_room_id, facing_toward and
+            found_gold information.
+            Can be implemented using c++ map.
+            e.g: map<string, int, string, bool, string, pair<int>,
+                     string, string, string, bool>
+
+        wumpus_status:
+            Holds the wumpus' living and room_id.
+            Can be implemented using c++ map.
+            e.g: map<string, bool, string, pair<int>>
+
         perception_history:
+            Holds all the percived information by the agent in a sequential order.
+            (i.e.: it's list of visited rooms)
+            Can be implemented using stack.
+
         ok_rooms:
+            Queue of safe rooms to go to.
+            Can be implemented using c++ queue. It is initialy filled with rooms of id
+            (1,2) and (2,1) since they are the first possible and known safe rooms to 
+            go to in the next step.
 
     Accessors:
         - get_perception_history()
 
     Accessors description:
         get_perception_history():
-
+            Returns copy of the perception_history attribute.
+        
     Sensors:
-        - does_stink(room_id)
+        - does_stench(room_id)
         - does_glitter(room_id)
         - has_breeze(room_id)
         - does_bump(room_id)
         - heared_scream()
 
     Sensors description:
-        does_stink(room_id):
+        does_stench(room_id):
+            Returns the truth-value of the "stench" knowledge term of the room at room_id in the grid.
+
         does_glitter(room_id):
+            Returns the truth-value of the "Glitter" knowledge term of the room at room_id in the grid.
+
         has_breeze(room_id):
+            Returns the truth-value of the "Breeze" knowledge term of the room at room_id in the grid.
+
         does_bump(room_id):
+            Returns "true" if room_id is not a valid room id
+            (i.e: let room_id = (x,y) 
+                      room_id is valid if 0 < x < 5 and 0 < y < 5
+                      room_id is invalid if x < 1 or x > 4 or y < 1 or y > 4)
+
         heared_scream():
+            Returns "true" if wumpus is dead by checking the record in the wumpus_status attribute.
 
     Actuators:
+        - go_to(room_id)
+        - grab(room_id)
         - move_forward()
+        - shoot(room_id)
         - turn_left()
         - turn_right()
-        - shoot(room_id)
+    NOTE: grab(room_id), move_forward(), turn_left(), turn_right() might be redundant with go_to(room_id)
 
     Actuators description:
         go_to(room_id):
+            Determine and execute sequence of actions inorder to go to the given room
+            and then update states accordingly.
+
+            It will update:
+                - Truth-values of the rooms visited and their neighbours during execution
+                  of the actions sequence.
+                - agent_status and wumpus_status.
+
+            (e.g.: [turn_left(), move_forward()] )
+
+        grab(room_id):
+            Determine sequence of actions to go to the given room where the gold is found in
+            and update states accordingly.
+            
+            It will update:
+                - Truth-values of the room the gold is found in.
+                - agent_status.
+
+            (e.g.: [turn_left(), move_forward()] )
+            Note: the room as to be an adjecent room.
+            
+        move_forward():
+            Move too the next room in the direction the agent is facing toward.
+        
         shoot(room_id):
+            Call the world.kill_wumpus_at(room_id) function and update states accordingly.
+
+            It will update:
+                - Truth-values of the room the wumpus was in and the neighbouring rooms.
+                - agent_status and wumpus_status.
+
+        turn_left():
+            Change the facing_toward value of the agent_status one step in counter clockwise direction.
+
+        turn_right():
+            Change the facing_toward value of the agent_status one step in clockwise direction.
 
     Deduction components:
         - rule_match()        
-        - program_evaluator(premises, conclusion)
+        - program_evaluator()
         - play()
 
     Deduction components:
         rule_match():
-        program_evaluator(premises, conclusion):
+            Determine and execute action commands based on the current knowledge of the agent.
+            
+            Implemented based on the pseudocode below:
+
+                for (each adjacent room) {
+                    if (wumpus is in the room) {
+                        shoot(room_id)
+                    }
+
+                    if (room glitters) {
+                        grab(room_id)
+                    }
+
+                    if (room is safe) {
+                        ok_rooms.push(room)
+                    }
+
+                    go_to(ok_rooms.pop())
+                }
+
+        program_evaluator():
+            Make deduction about unvisited neighbouring rooms of the current room the agent is in.
+            It will use the perception history, model and the current room of the agent. Finally it
+            updates the knowledge in every unvisited neighbouring rooms accordingly.
+            
+            The purpose of deduction is to determine truth-value for an undetermined state of a room.
+            It will be done by iterating over every undetermined state of every unvisited neighbouring room.
+
+            Deduction inputs(recipies) at every iteration:
+                Premis: perception_history
+                Conclusion to prove: Undetermined state of a room
+
         play():
+            Defines the steps that the agent will follow in playing the game.
+            It performs the following steps iteratively as in the given below sequence:
+                - PERCIVE.
+                - DEDUCE knowledge(truth-values) about the states of unvisited neighbouring rooms.
+                - UPDATE the states of unvisited neighbouring rooms based on the deduction.
+                - DETERMINE and EXECUTE rule based actions.
+
+            pseudocode:
+                while (not(agent.found_gold)) { // until the agent finds the gold
+
+                    // percive all the knowledge in the current room and add the room to perception history
+                    perception_history.push(world.get_room(agent.current_room_id))
+
+                    // make deduction on knowledge of neighbouring rooms to agent.current_room_id
+                    // and update truth-values of neighbouring rooms.
+                    program_evaluator()
+
+                    // Determine and execute action based on the knowledge the agent have currently
+                    rule_match()
+                }
 
 4. UI: Terminal based user interface that display the simulated wumpus world game.
    The display includes the grid of the rooms at center, Agent perception history at
