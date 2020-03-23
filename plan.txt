@@ -1,0 +1,164 @@
+The project is going to be divided into 5 sub parts.
+There will be unit test for 3 of the 5 sub parts.
+
+Project sub-parts:
+
+1. Room: A knowledge container to implement the concept of a single room in a world's grid.
+It will be implemented as a c++ class and will have:
+    - a private attribute,
+    - constructor and
+    - an accessor method
+
+Knowledge will be represented using knowledge terms given during the tutorial session.
+They are:
+        Pit => true if there is pit in the room.
+        Breeze => true if there is breeze in the room.
+        Wumpus => true if there is wumpus in the room.
+        Stink => true if the room stinks.
+        Visited => true if the room is already visited.
+        Gold => true if there is gold in the room.
+
+- The constructor has no input parameter. It will initialize all the 6 knowledge terms to false(assuming
+  "false" is default value).
+
+- The attribute is going to be implemented using c++ map datastructure. Knowledge terms will be used as key
+  and corresponding truth-values(boolean) will be used as value in the map.
+
+- The accessor method is a getter that will take knowledge term as an argument and use it as key to return
+  the truth value of the knowledge term from the private map attribute.
+
+2. World: The actual game world. It will contain the environment and all the components that will build up
+   the game world.
+   It will be implemented as a c++ class and will have:
+
+   Attributes:
+        - model
+        - grid
+        - agent_status
+        - wumpus_status
+
+    Attributes description:
+        model: 
+        grid: 
+        agent_status:
+        wumpus_status:
+    
+    Accessors:
+        - grid_init()
+        - get_model()
+        - get_grid()
+        - get_room(room_id)
+        - get_agent_status()
+        - get_wumpus_status()
+        - kill_wumpus_at(room_id)
+
+    Accessors description:
+        grid_init():
+        get_model():
+        get_grid():
+        get_room(room_id):
+        get_agent_status():
+        get_wumpus_status():
+        kill_wumpus_at(room_id):
+
+3. Agent: The intelligent player that move around in the world to get the gold while
+   escaping from being eaten by the wumpus and if possible kill it. In addition it will 
+   also make decision to avoid falling into a pit.
+   It will continiously move around in the world then deduce and fill in all the knowledge
+   contained in the grid of the world in to it's own version of the grid until it finds
+   the gold.
+
+   It will be implemented as a c++ class and will have:
+
+    Attributes:
+        - model
+        - grid
+        - agent_status
+        - perception_history
+        - ok_rooms
+
+    Attributes description:
+        model: 
+        grid: 
+        agent_status:
+        perception_history:
+        ok_rooms:
+
+    Accessors:
+        - get_perception_history()
+
+    Accessors description:
+        get_perception_history():
+
+    Sensors:
+        - does_stink(room_id)
+        - does_glitter(room_id)
+        - has_breeze(room_id)
+        - does_bump(room_id)
+        - heared_scream()
+
+    Sensors description:
+        does_stink(room_id):
+        does_glitter(room_id):
+        has_breeze(room_id):
+        does_bump(room_id):
+        heared_scream():
+
+    Actuators:
+        - move_forward()
+        - turn_left()
+        - turn_right()
+        - shoot(room_id)
+
+    Actuators description:
+        go_to(room_id):
+        shoot(room_id):
+
+    Deduction components:
+        - rule_match()        
+        - program_evaluator(premises, conclusion)
+        - play()
+
+    Deduction components:
+        rule_match():
+        program_evaluator(premises, conclusion):
+        play():
+
+4. UI: Terminal based user interface that display the simulated wumpus world game.
+   The display includes the grid of the rooms at center, Agent perception history at
+   right side, wumpus life status and agent status (life and remaining arrow) below
+   rooms grid and current room info at left side.
+
+   It will be implemented as a c++ class and will have:
+
+    Constructor:
+        - UI(world wumpusArena, agent AIplayer)
+    
+    Constructor description:
+        UI(world wumpusArena, agent AIplayer): 
+            Initializ UI with basic informations obtained from the parameters
+            using their corresponding accessors to acess all the informations
+            to be displayed.
+
+    Method:
+        - start_UI()
+
+    Method description:
+        start_UI():
+            Initialize and update the user interface contents. The UI is Initialized
+            in a separate thread so that the UI will be updated every time the agent
+            performs an action using the signal sent by the agent after every action.
+
+5. app: C++ executable file. All the above four components will be integrated and run
+        from the main function of the source code c++ file.
+    
+    Steps:
+      - Initialize a world instance.
+      - Initialize an agent instance.
+      - Initialize a UI instance using the world and agent instances initialized.
+      - start the game.
+
+Components relationship:
+ 1. World and Agent:
+ 2. World and UI:
+ 3. Agent and UI:
