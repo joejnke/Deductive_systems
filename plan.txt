@@ -58,8 +58,6 @@ Project sub-parts:
         get_adjacents():
             Return list of valid adjacent room ids.
 
-- The second accesor method will return list of valid adjacent rooms.
-
 2. World: The actual game world. It will contain the environment and all the components that will build up
    the game world.
    It will be implemented as a c++ class and will have:
