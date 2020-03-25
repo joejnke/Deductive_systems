@@ -14,7 +14,7 @@ Project sub-parts:
     Attributes description:
         knowledge:
             Container for the knowledge(states) of a room.
-            Knowledge will be represented using knowledge terms given during the tutorial session.
+            Knowledge will be represented using knowledge terms given below.
             They are:
                     Pit => true if there is pit in the room.
                     Breeze => true if there is breeze in the room.
@@ -30,7 +30,7 @@ Project sub-parts:
                 0  implies the boolean "false"
                 1  implies the boolean "true"
             
-            Note: The reason to use integers is because of the need to set default value to set initially.
+            Note: The reason to use integers is because of the need to set default value during initialization.
             Setting initial value to "true" or "false" is not advisable because the values make sense.
             e.g.: setting Wumpus to "true" by default will initialize every new room having a wumpus.
 
@@ -54,7 +54,9 @@ Project sub-parts:
                 - "NaN" if -1
                 - the boolean "false" if 0
                 - the boolean "true" if 1
-        
+
+            Note: We might use -1, 0, 1 as is with out the need to map them to "NaN", "False", "True".
+            
         get_adjacents():
             Return list of valid adjacent room ids.
 
@@ -85,7 +87,7 @@ Project sub-parts:
             e.g: map<string, int, string, bool, string, pair<int>, string, bool>
 
         wumpus_status:
-            Holds the wumpus' living and room_id.
+            Holds the wumpus' living and room_id information.
             Can be implemented using c++ map.
             e.g: map<string, bool, string, pair<int>>
 
@@ -140,7 +142,7 @@ Project sub-parts:
             Kills the wumpus if it is found in the given room_id and update wumpus_status
             and agent_status.
             Returns "true" if the wumpus is found and killed
-                    "false" if the wumpus is not in the given room. 
+                    "false" if the wumpus is not found in the given room. 
             It will be used by the agent object.
 
             Killing is done based on this pseudocode:
@@ -149,8 +151,8 @@ Project sub-parts:
                 
                 // if there is wumpus in the room and the agent has arrow to use
                 if(wumpus_room.get(wumpus) and agent_status.remaining_arrow>0) { 
-                    wumpus_room.set(wumpus, false); // change the truth-value to "false"
-                    wumpus_status.remaining_life = 0; // record that the wumpus is dead
+                    wumpus_room.set(wumpus, 0); // change the truth-value to "false"
+                    wumpus_status.living = false; // record that the wumpus is dead
                     agent_status.remaining_arrow--; // decrement the remaining_arrow
 
                     return true
@@ -174,6 +176,7 @@ Project sub-parts:
         - model
         - grid
         - agent_status
+        - wumpus_status
         - perception_history
         - ok_rooms
 
@@ -249,6 +252,8 @@ Project sub-parts:
         - shoot(room_id)
         - turn_left()
         - turn_right()
+        - signal_to_UI()
+
     NOTE: grab(room_id), move_forward(), turn_left(), turn_right() might be redundant with go_to(room_id)
 
     Actuators description:
@@ -263,17 +268,22 @@ Project sub-parts:
 
             (e.g.: [turn_left(), move_forward()] )
 
+            ------------------- OR ------------------------
+            (assuming grab(room_id), move_forward(), turn_left(),
+            turn_right() are redundant and replaced by go_to(room_id).
+
+            Go to the given room. But, first checks if the move is valid(i.e.: the agent can move from current
+            room to the room given by room_id) and then if it's valid, move to the room and update agent's
+            current room, else it keeps the agent in the current room.
+
         grab(room_id):
-            Determine sequence of actions to go to the given room where the gold is found in
-            and update states accordingly.
+            Use go_to(room_id) to go to the room and then grab gold if there is one in the room. Then update 
+            states accordingly.
             
             It will update:
-                - Truth-values of the room the gold is found in.
+                - Truth-values of the room the gold is found in(i.e.: set Glitter to "false" since its already grabed).
                 - agent_status.
 
-            (e.g.: [turn_left(), move_forward()] )
-            Note: the room as to be an adjecent room.
-            
         move_forward():
             Move too the next room in the direction the agent is facing toward.
         
@@ -289,6 +299,12 @@ Project sub-parts:
 
         turn_right():
             Change the facing_toward value of the agent_status one step in clockwise direction.
+
+        signal_to_UI():
+            Send out signal to the user interface.
+            This is requiered because we plan to run the user interface and the agent in separate threads 
+            and we need to let user interface update the graphics whenever the agent performs an action.
+            So the UI knows that the agent has performed an action when it receives this signal.
 
     Deduction components:
         - rule_match()        
@@ -343,12 +359,15 @@ Project sub-parts:
                     // percive all the knowledge in the current room and add the room to perception history
                     perception_history.push(world.get_room(agent.current_room_id))
 
-                    // make deduction on knowledge of neighbouring rooms to agent.current_room_id
-                    // and update truth-values of neighbouring rooms.
+                    // make deduction on knowledge of unvisited neighbouring rooms to agent.current_room_id
+                    // and update truth-values of the unvisited neighbouring rooms.
                     program_evaluator()
 
                     // Determine and execute action based on the knowledge the agent have currently
                     rule_match()
+                    
+                    //send signal to the user interface
+                    signal_to_UI()
                 }
 
 4. UI: Terminal based user interface that display the simulated wumpus world game.
@@ -372,20 +391,129 @@ Project sub-parts:
 
     Method description:
         start_UI():
-            Initialize and update the user interface contents. The UI is Initialized
-            in a separate thread so that the UI will be updated every time the agent
-            performs an action using the signal sent by the agent after every action.
+            Initialize and update the user interface contents. Then trigger the agent 
+            to start playing using AIplayer.play().
+
+            The UI is Initialized in a separate thread so that the UI will be updated
+            every time the agent performs an action using the signal sent by the agent
+            after every action.
 
 5. app: C++ executable file. All the above four components will be integrated and run
         from the main function of the source code c++ file.
     
     Steps:
       - Initialize a world instance.
+        e.g.: world wumpusArena = world()
+
       - Initialize an agent instance.
+        e.g.: agent AIplayer = agent()
+
       - Initialize a UI instance using the world and agent instances initialized.
-      - start the game.
+        e.g.: UI gameInterface = UI(wumpusArena, AIplayer)
+
+      - start the game by starting the UI.
+        e.g.: gameInterface.start_UI()
 
 Components relationship:
  1. World and Agent:
+    The wrold contains basic status information (life status, current room and remaining arrow) 
+    about the agent. These information are initially set to default and known values. But then
+    will be updated when the agent makes call to world's functions.
+        
+    World functoins accessable to agent and information obtained(exchanged) during function call:
+        - get_model():
+            Agent obtains:
+                * copy of the model in the world.
+        
+        - get_room(room_id):
+            Agent obtains:
+                * copy of the room object at the given room_id.
+            World obtains:
+                * the current room where the agent is in.
+        
+        - kill_wumpus_at(room_id):
+            Agent obtains:
+                * know if kill was successfull
+            World obtains:
+                * knows that the agent has used one arrow and will decrement agent's remaining_arrow.
+
+
+
  2. World and UI:
+    World functoins accessable to UI and information obtained(exchanged) during function call:
+        - get_grid():
+            UI obtains:
+                * copy of the grid of rooms in the world.
+        
+        - get_room(room_id):
+            UI obtains:
+                * copy of the room object at the given room_id.
+        
+        - get_agent_status():
+            UI obtains:
+                * agent's life, current room and remaining arrow information.
+
+        - get_wumpus_status():
+            UI obtains:
+                * wumpus' life status.
+
  3. Agent and UI:
+    Agent functoins accessable to UI and information obtained(exchanged) during function call:
+        - play():
+            UI obtains:
+                * access to make the agent start playing.
+        
+        - get_perception_history():
+            UI obtains:
+                * copy of agent's perception history.
+        
+        - signal_to_UI():
+            UI obtains:
+                * signal to start updating the displayed information on the user interface.
+
+PLAN SUMMARY:
+    The impementation plan of this project is composed of five major parts.
+        - Room
+        - World
+        - Agent
+        - User interface (UI)
+        - Main app
+    
+        The Room is an object which serves as a container for the knowledge that a single room have in the world.
+    The state of every knowledge is accessable and also modifiable via the accessors provided.
+
+        The World is a bigger container. It builds up the game world from bunch of rooms and a model that
+    govern the world. In addition it keeps record of information about the main participants of the game
+    which are the wumpus and the agent.
+    The bunch of rooms are kept inside a container named grid. The grid keeps rooms with an ID (pair of
+    row and column number) assigned for each of the rooms. The model is also kept in another container representing
+    every statment in logical syllogism format. The premis and conclusion of every statement in the model is
+    accessable. The status of the wumpus and the agent are each stored in separate container. They are accessable
+    to the user interface and will be used as a source for what will be displayed about the wumpus and the agent on
+    the user interface.
+
+        The Agent is another object that will build up intelligent game player. The ultimate goal of this intelligent
+    player is to get the gold containd in the world.
+    The agent contains the model by which the world is governed. In addition it have it's own version of rooms grid. It
+    uses its intelligence to fill up this grid and have fully or partialy complete knowledge about what is contained in
+    the world's grid. Then it can easily avoid pits, get the gold and also kill the wumpus. If it achive the goal, even
+    before fully completing the grid, the game ends with the agent being the winner.
+    The Agent also keeps record of the status of itself and the wumpus.
+    The intelligence of the agent is built from two components and another third component integrates these two parts to
+    work together. The first component, named "program_evaluator", uses the model and the perception history of the agent
+    to deduce knowledge about nearby rooms and then the second component, named "rule_match", uses these deduced knowledge
+    to make decision on the agent's next action. The last component, named "play", is a facilitator for the two components.
+    It does what needs to be done before and after the execution of each of the two components. Generally it defines
+    the overall iterative sequence of steps taken by the agent during the game play.
+
+        The UI (user interface) is an object intended to visualize the whole game session. It displays all the knowledge
+    contained in each of the rooms of the world's grid. In addition it displays the agent's life status, current room,
+    remaining arrow and the chronologically ordered perception history. It also displays the status of the wumpus and
+    the information contained in the current room the agent is found in. 
+    It keeps updating the displayed information every time the agent performs an action. All the information displayed
+    is obtained from the world and only the signal that indicate the agent has performed an action will be triggered by
+    the agent and the user interface uses this signal to start updating displayed information.
+
+        The Main app is the place where all the above parts will be initialized and linked together to setup the game
+    and start the play.
+
