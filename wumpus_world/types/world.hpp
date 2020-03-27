@@ -28,6 +28,7 @@ public:
     World();
    //Initialize the grid with random knowledge set to the rooms.
  	void grid_init();
+	void init_empty_world();
 	//since for now we consider model as int the method return int datatype
 	int get_model();
 	//return a copy of grid attribute

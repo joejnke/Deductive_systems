@@ -7,7 +7,7 @@ using namespace std;
 World::World()
 {
     init_empty_world();
-	generate_position();
+	grid_init();
 }
 
 //initializes an empty box with no position information
