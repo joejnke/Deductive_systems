@@ -134,12 +134,13 @@ Project major parts:
             e.g.: setting Wumpus to "true" by default will initialize every new room having a wumpus.
 
     - Constructor:
-        - room()
+        - room(room_id)
     
     - Constructor description:
-        - room():
+        - room(room_id):
 
-            Initialize all the six knowledge terms to a default value of **-1**.
+            Initialize the _```room_id```_ attribute to the ```room_id``` input parameter and initialize all the six 
+            knowledge terms to a default value of **-1**.
 
     - Accessors:
         - get_truth_value(knowledge_term)
