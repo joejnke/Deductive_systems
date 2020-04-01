@@ -108,7 +108,9 @@ Project major parts:
    
     - Attributes:
         - knowledge
-   
+        - room_id
+        - default_tv
+
     - Attributes description:
         - knowledge:
 
@@ -133,6 +135,20 @@ Project major parts:
             Setting initial value to "true" or "false" is not advisable because the values make sense.
             e.g.: setting Wumpus to "true" by default will initialize every new room having a wumpus.
 
+        - room_id:
+
+            A pair of ```int``` that inidicate the position of the ```room``` in the grid as ```(x,y)``` where ```x``` is the horizontal 
+            distance and ```y``` is the vertical distance. 
+
+            The coordinates start with (1, 1) at the left bottom corner and counting increases verticaly up and horizontaly to
+            the right.
+        
+        - default_tv:
+
+            This attribute represents the default value for initializing ```knowledge_terms``` of a ```room```. 
+
+            Has a value of ```-1```, which represents that the ```knowledge_term``` is yet not assigned to a ```true``` or ```false``` value.
+
     - Constructor:
         - room(room_id)
     
@@ -144,7 +160,10 @@ Project major parts:
 
     - Accessors:
         - get_truth_value(knowledge_term)
+        - set_truth_value(knowledge_term, tv)
         - get_adjacents()
+        - get_room_id()
+        - get_knowledge()
 
     - Accessors description:
         - get_truth_value(knowledge_term):
@@ -159,9 +178,23 @@ Project major parts:
 
             > Note: We might use **_-1_**, **_0_**, **_1_** as is with out the need to map them to **_NaN_**, **_False_**, **_True_**.
             
+        - set_truth_value(knowledge_term, tv):
+
+            Sets the given ```knowledge_term``` to ```true``` or ```false``` as given by the ```tv``` parameter.
+
+            It maps the boolean ```tv``` to the corresponding int value.
+        
         - get_adjacents():
             
             Return list of valid adjacent room ids.
+
+        - get_room_id()
+
+            Return the ```room_id``` attribute.
+
+        - get_knowledge()
+
+            Return the ```knowledge``` attribute.
 
 2. **World**: The actual game world. It will contain the environment and all the components that will build up
    the game world.
@@ -211,7 +244,7 @@ Project major parts:
     - Constructor description:
         - world():
 
-            Initialize the world by setting all the attributes to their coresponding values.
+            Initialize the world by setting all the attributes to their corresponding values.
 
     - Accessors:
         - grid_init()
@@ -571,7 +604,7 @@ Project major parts:
             The UI is Initialized in a separate thread so that the UI will be updated every time the agent performs an action 
             using the signal sent by the agent after every action.
 
-5. ```Main app```: executable file. 
+5. **Main app**: executable file. 
 
     All the above four components will be integrated and run from the main function of this source code file.
     
