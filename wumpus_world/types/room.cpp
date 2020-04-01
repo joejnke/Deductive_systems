@@ -10,15 +10,15 @@ using namespace std;
 room::room(std::pair<int, int> room_id)
 {
     this->room_id = room_id;
-
-    this->default_tv = -1;
-    this->knowledge = {{"breeze", this->default_tv},
-                       {"glitter", this->default_tv},
-                       {"pit", this->default_tv},
-                       {"stench", this->default_tv},
-                       {"visited", this->default_tv},
-                       {"wumpus", this->default_tv}};
+    int default_tv = -1;
+    this->knowledge = {{"breeze", default_tv},
+                       {"glitter", default_tv},
+                       {"pit", default_tv},
+                       {"stench", default_tv},
+                       {"visited", default_tv},
+                       {"wumpus", default_tv}};
 }
+
 
 std::pair<int, int> room::get_room_id()
 {
@@ -41,7 +41,6 @@ bool room::get_truth_value(std::string knowledge_term)
     else
         throw "truth value not yet set...";
 }
-
 void room::set_truth_value(std::string knowledge_term, bool tv)
 {
     try
