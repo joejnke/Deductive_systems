@@ -1,4 +1,3 @@
-
 #include "world.hpp"
 
 
@@ -6,26 +5,13 @@ using namespace std;
 
 World::World()
 {
-    init_empty_world();
+	pair<int, int> wumpus_room = get_wumpus_room();
+	auto wumpus_initial_status = make_pari(1, wumpus_room);
+	this->wumpus_status.insert(make_pair());
 	grid_init();
 }
 
-//initializes an empty box with no position information
-void World::init_empty_world()
-{
-    int size = 4;
-    for (int i = 1; i <=count; i++)
-    {
-        vector<Room> vecs;
-        for (int j = 1; j <= count; j++)
-        {
-            Room common = Room(j, i);
-            vecs.push_back(common);
-        }
-        grid.push_back(vecs);
-    }
-}
-void grid_init(){
+void World::grid_init(){
 	srand((int)time(0));
     int iter = 3;
     vector<pair<int, int>> store;      // a set of position for storing wumpus, pit , gold
@@ -83,34 +69,10 @@ void grid_init(){
     put_gold(gold);
 }
 
-map<int, pair<int, int>, int, int> get_agent_status(){
-	return agent_status;
+map<pair<int, int>, int, int, int> World::get_agent_status(){
+	return this->agent_status;
 }
-map<int, pair<int, int>> get_wumpus_status(){
-	return wumpus_status;
-}
-Room World::get_room(pair<int, int> room_id){
-	int position[] = {pit.first, pit.second};
-	Room room = grid.at(pos[0])
-	return room
-}
-void World::put_wumpus(pair<int, int> wumpus)
-{
-    Element elt = WUMPUS;
-	vector position = {pit.first, pit.second};
-	grid[pit.first] [pit.second] = elt;
-}
-void World::put_pit(pair<int, int> pit)
-{	
-	Element elt = PIT;
-	vector position = {pit.first, pit.second};
-	grid[pit.first] [pit.second] = elt;
-}
-
-void World::put_gold(pair<int, int> gold)
-{
-    Element elt = GOLD;
-	vector position = {pit.first, pit.second};
-	grid[pit.first] [pit.second] = elt;  
+map<pair<int, int>, int> World::get_wumpus_status(){
+	return this->wumpus_status;
 }
 

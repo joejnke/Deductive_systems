@@ -20,12 +20,10 @@ class room
 private:
     std::map<std::string, int> knowledge; // truth values for knowledge contained in a room
     std::pair<int, int> room_id;          // room_id of the room. Assumes left-bottom corner as (x,y)=(1,1) and starting point.
-<<<<<<< HEAD
 public:
     /// Constructor initializing the room_id to input parameter and all truth values to false
     room(std::pair<int, int> room_id);
     /**
-=======
     int default_tv;                       // default truth value
 public:
     /// Constructor initializing the default_tv to -1,
@@ -42,7 +40,6 @@ public:
         */
     std::map<std::string, int> get_knowledge();
     /**
->>>>>>> master
         *  @brief Getter of the ruth value associated with the given knowledge_term.
         *  @param knowledge_term String of the key of whose truth value is required. 
         *  @return Bool
@@ -53,10 +50,8 @@ public:
         */
     bool get_truth_value(std::string knowledge_term);
     /**
-<<<<<<< HEAD
         *  @brief Gets set of room_ids of valid neighbouring rooms.
         *  @return Set 
-=======
         *  @brief Getter of the ruth value associated with the given knowledge_term.
         *  @param knowledge_term String of the key of whose truth value is required. 
         *  @param tv Bool to set as truth value.
@@ -69,7 +64,6 @@ public:
     /**
         *  @brief Gets set of room_ids of valid neighbouring rooms.
         *  @return Set get_adjacents
->>>>>>> master
         * 
         *  Find the room_id of all valid neighbouring rooms to the room and return
         *  a set of these room_ids.
