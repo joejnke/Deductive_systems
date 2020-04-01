@@ -1,6 +1,6 @@
 
-#ifndef WORLD_H
-#define WORLD_H
+#ifndef WORLD_H_
+#define WORLD_H_
 
 #include <string>
 #include <vector>
@@ -9,7 +9,7 @@
 #include <set>
 #include <ctime>
 #include<cstdlib>
-#include "Room.h"
+#include "Room.hpp"
 #include <utility>
 
 using namespace std;

@@ -31,7 +31,6 @@ bool room::get_truth_value(std::string knowledge_term)
     else
         throw "truth value not yet set...";
 }
-
 std::set<std::pair<int, int>> room::get_adjacents()
 {
     std::set<std::pair<int, int>> adjacent_rooms_id;
