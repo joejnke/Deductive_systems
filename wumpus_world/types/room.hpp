@@ -22,8 +22,11 @@ private:
     std::pair<int, int> room_id;          // room_id of the room. Assumes left-bottom corner as (x,y)=(1,1) and starting point.
     int default_tv;                       // default truth value
 public:
+    /// Default constructor initializing the default_tv to -1 and all truth
+    /// values to this deafult value
+    room();
     /// Constructor initializing the default_tv to -1,
-    /// room_id to input parameter and all truth values to false
+    /// room_id to input parameter and all truth values to this deafult value
     room(std::pair<int, int> room_id);
     /**
         *  @brief Getter of the room_id class attribute.
