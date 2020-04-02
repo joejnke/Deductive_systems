@@ -7,6 +7,17 @@
 
 using namespace std;
 
+room::room()
+{
+    this->default_tv = -1;
+    this->knowledge = {{"breeze", this->default_tv},
+                       {"glitter", this->default_tv},
+                       {"pit", this->default_tv},
+                       {"stench", this->default_tv},
+                       {"visited", this->default_tv},
+                       {"wumpus", this->default_tv}};
+}
+
 room::room(std::pair<int, int> room_id)
 {
     this->room_id = room_id;
