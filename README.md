@@ -150,9 +150,14 @@ Project major parts:
             Has a value of ```-1```, which represents that the ```knowledge_term``` is yet not assigned to a ```true``` or ```false``` value.
 
     - Constructor:
+        - room()
         - room(room_id)
     
     - Constructor description:
+        - room():
+            
+            Initialize ```default_tv``` to **-1** and all the six knowledge terms to this default value of **-1**.
+        
         - room(room_id):
 
             Initialize the _```room_id```_ attribute to the ```room_id``` input parameter and initialize all the six 
