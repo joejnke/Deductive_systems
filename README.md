@@ -344,8 +344,11 @@ Project major parts:
     - Attributes:
         - model
         - grid
-        - agent_status
-        - wumpus_status
+        - remainingArrow
+        - roomId
+        - facingToward
+        - foundGold
+        - wumpusRoom
         - perception_history
         - ok_rooms
 
@@ -359,21 +362,31 @@ Project major parts:
             A 4X4 grid of room objects. Can be implemented using 2D array of room objects. It'll be filled in using the 
             decisions the agent make. The aim is to fill it up with same knowledge as the grid of the world.
             
-        - agent_status:
-        
-            Holds the agent's ```remaining_arrow```, ```living```, ```current_room_id```, ```facing_toward``` and ```found_gold``` information.
+        - remainingArrow:
 
-            It can be implemented using c++ map.
+            Integer holding the number of remaining arrows the agent have.
 
-            e.g: ```map<string, int, string, bool, string, pair<int>, string, string, string, bool>```
+        - roomId:
 
-        - wumpus_status:
-          
-            Holds the wumpus' living and room_id. 
-            
-            It can be implemented using c++ map.
-            
-            e.g: ```map<string, bool, string, pair<int>>```
+            The ID of the room the agent is currently in.
+
+            (-1, -1) if agent is dead.
+
+        - facingToward:
+
+            String showing the direction to which the agent is facing toward.
+
+            Default value is "Right".
+
+        - foundGold
+
+            Records whether the agent got the gold or not.
+
+        - wumpusRoom
+
+            The ID of the room the wumpus is in.
+
+            (-1, -1) if the wumpus is killed.
 
         - perception_history:
           
@@ -381,7 +394,7 @@ Project major parts:
 
             It can be implemented using stack.
 
-        - ok_rooms:
+        - okRooms:
           
             Queue of safe rooms to go to.
 
