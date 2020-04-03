@@ -427,6 +427,7 @@ Project major parts:
         - does_stench(room_id)
         - does_glitter(room_id)
         - has_breeze(room_id)
+        - has_wumpus(room_id)
         - does_bump(room_id)
         - heared_scream()
 
@@ -438,6 +439,10 @@ Project major parts:
         - does_glitter(room_id):
           
             Returns the truth-value of the ```Glitter``` knowledge term of the room at ```room_id``` in the ```grid```.
+
+        - has_wumpus(room_id)
+
+            Returns the truth-value of the ```wumpus``` knowledge term of the room at ```room_id``` in the ```grid```.
 
         - has_breeze(room_id):
           

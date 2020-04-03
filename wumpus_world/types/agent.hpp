@@ -80,6 +80,26 @@ public:
         */
     bool has_breeze(std::pair<int, int> room_id);
     /**
+        *  @brief Wumpus sensor
+        *  @param room_id id of the room to sense from.
+        *  @return bool
+        * 
+        *  Returns "wumpus" status of the room.
+        */
+    bool has_wumpus(std::pair<int, int> room_id);
+    /**
+        *  @brief Check if the room is safe
+        *  @param room_id id of the room to sense from.
+        *  @return bool
+        * 
+        *  Returns "true" if "wumpus" and "pit" states of
+        *  the given room are set and their truth value
+        *  is "false". Otherwise, if either their truth
+        *  value is not set or they are set and have
+        *  truth value of "true", it will returns "false".
+        */    
+    bool is_safe(std::pair<int, int> room_id);
+    /**
         *  @brief Scream sensor
         *  @param room_id id of the room to sense from.
         *  @return bool
