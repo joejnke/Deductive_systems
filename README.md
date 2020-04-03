@@ -396,16 +396,22 @@ Project major parts:
 
         - okRooms:
           
-            Queue of safe rooms to go to.
+            Stack of safe rooms to go to.
 
-            It can be implemented using c++ queue. It is initially filled with rooms of id (1,2) and (2,1) since they are the 
+            It can be implemented using c++ stack. It is initially filled with rooms of id (1,2) and (2,1) since they are the 
             first possible and known safe rooms to go to in the next step.
 
     - Constructor:
-        - agent(world wumpusArena)
+        - agent()
+
+        - agent(world arena)
 
     - Constructor description:
-        - agent(world wumpusArena):
+        - agent():
+
+            Initialize all the attributes to their default values except for those to be obtained from the world.
+
+        - agent(world arena):
 
             Initialize the agent by setting all the attributes to their coresponding values.
 
