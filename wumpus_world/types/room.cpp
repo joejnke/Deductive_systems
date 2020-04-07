@@ -72,18 +72,28 @@ std::set<std::pair<int, int>> room::get_adjacents()
 {
     std::set<std::pair<int, int>> adjacent_rooms_id;
 
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second + 1)); // insert upper neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second - 1)); // insert lower neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first - 1, this->room_id.second)); // insert left neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first + 1, this->room_id.second)); // insert right neighbour room
-
-    for (auto neighbour : adjacent_rooms_id)
+    if (this->room_id.second + 1 < 4)
     {
-        // check if any of the neighbours is invalid (out of grid) and remove it from the set
-        if (neighbour.first > 4 or neighbour.first < 1 or neighbour.second > 4 or neighbour.second < 1)
-        {
-            adjacent_rooms_id.erase(neighbour);
-        }
+        // insert upper neighbouring room
+        adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second + 1));
+    }
+
+    if (this->room_id.second - 1 > -1)
+    {
+        // insert lower neighbour room
+        adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second - 1));
+    }
+
+    if (this->room_id.first + 1 < 4)
+    {
+        // insert right neighbour room
+        adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first + 1, this->room_id.second));
+    }
+
+    if (this->room_id.first - 1 > -1)
+    {
+        // insert left neighbour room
+        adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first - 1, this->room_id.second));
     }
 
     return adjacent_rooms_id;
