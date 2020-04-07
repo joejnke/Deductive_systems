@@ -9,26 +9,12 @@ using namespace std;
 
 room::room()
 {
-    this->default_tv = -1;
-    this->knowledge = {{"breeze", this->default_tv},
-                       {"glitter", this->default_tv},
-                       {"pit", this->default_tv},
-                       {"stench", this->default_tv},
-                       {"visited", this->default_tv},
-                       {"wumpus", this->default_tv}};
+    room_id = std::pair<int,int> (-1, -1); // default room id which is out of grid
 }
 
 room::room(std::pair<int, int> room_id)
 {
     this->room_id = room_id;
-
-    this->default_tv = -1;
-    this->knowledge = {{"breeze", this->default_tv},
-                       {"glitter", this->default_tv},
-                       {"pit", this->default_tv},
-                       {"stench", this->default_tv},
-                       {"visited", this->default_tv},
-                       {"wumpus", this->default_tv}};
 }
 
 std::pair<int, int> room::get_room_id()
@@ -36,36 +22,27 @@ std::pair<int, int> room::get_room_id()
     return this->room_id;
 }
 
-std::map<std::string, int> room::get_knowledge()
+std::map<std::string, bool> room::get_knowledge()
 {
     return this->knowledge;
 }      
 
 bool room::get_truth_value(std::string knowledge_term)
 {
-    if (this->knowledge.at(knowledge_term) == 0)
-        return false;
-
-    else if (this->knowledge.at(knowledge_term) == 1)
-        return true;
-
-    else
-        throw "truth value not yet set...";
+    return this->knowledge.at(knowledge_term);
 }
 
 void room::set_truth_value(std::string knowledge_term, bool tv)
 {
-    try
+    if (knowledge.find(knowledge_term) == knowledge.end())
     {
-        if (tv)
-            this->knowledge.at(knowledge_term) = 1;
-        else
-            this->knowledge.at(knowledge_term) = 0;
+        knowledge.emplace(knowledge_term, tv);
     }
-    catch(const std::out_of_range& e)
+
+    else
     {
-        std::cerr << e.what() << '\n';
-    }
+        this->knowledge.at(knowledge_term) = tv;
+    }    
 }
 
 std::set<std::pair<int, int>> room::get_adjacents()
