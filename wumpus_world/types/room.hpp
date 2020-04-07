@@ -18,17 +18,17 @@
 class room
 {
 private:
-    std::map<std::string, bool> knowledge; // truth values for knowledge contained in a room
-    std::pair<int, int> room_id;          // room_id of the room. Assumes left-bottom corner as (x,y)=(1,1) and starting point.
+    std::map<std::string, bool> _knowledge; // truth values for knowledge contained in a room
+    std::pair<int, int> _room_id;          // _room_id of the room. Assumes left-bottom corner as (x,y)=(1,1) and starting point.
 public:
     /// Default constructor initializing the default_tv to -1 and all truth
     /// values to this deafult value
     room();
     /// Constructor initializing the default_tv to -1,
-    /// room_id to input parameter and all truth values to this deafult value
+    /// _room_id to input parameter and all truth values to this deafult value
     room(std::pair<int, int> room_id);
     /**
-        *  @brief Getter of the room_id class attribute.
+        *  @brief Getter of the _room_id class attribute.
         *  @return pair<int, int>
         */
     std::pair<int, int> get_room_id();
@@ -57,7 +57,7 @@ public:
         *  @brief Gets set of room_ids of valid neighbouring rooms.
         *  @return Set get_adjacents
         * 
-        *  Find the room_id of all valid neighbouring rooms to the room and return
+        *  Find the _room_id of all valid neighbouring rooms to the room and return
         *  a set of these room_ids.
         * 
         *  Invalid neighbours are those outside a 4X4 grid of rooms. (e.g.: (-1,2)) 

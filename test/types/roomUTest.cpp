@@ -14,7 +14,7 @@ std::string test_parametrized_constructor()
 
     // test if id is set correctly
     testCount++;
-    testResult = ("\nTest room(room_id) for setting room_id: ");
+    testResult = ("\nTest room(room_id) for setting _room_id: ");
     if (testRoom.get_room_id() == pair<int, int>(3, 2))
     {
         testResult += "\nPass ";
@@ -69,12 +69,7 @@ std::string test_get_knowledge()
 {
     room testRoom(pair<int, int>(3, 2));
     int default_tv = -1;
-    std::map<std::string, int> knowledgeToCompare{{"breeze", default_tv},
-                                                  {"glitter", default_tv},
-                                                  {"pit", default_tv},
-                                                  {"stench", default_tv},
-                                                  {"visited", default_tv},
-                                                  {"wumpus", default_tv}};
+    std::map<std::string, bool> knowledgeToCompare{};
 
     testCount++;
     testResult = ("\nTest get_knowledge(): ");
