@@ -43,7 +43,7 @@ The **World** will be governed based on the following _rules_:
 - The agent has one arrow.
 - If the agent shoots an arrow into the room the wumpus is in, then the Wumpus dies.
 - If wumpus and agent are in the same room wumpus will kill the agent. 
-- There is one wumpus, 3 pits and 1 gold kept at randomly choosen rooms. The rooms at grid location of (1, 2) and (2, 1) are initialy empty and the agent is in the room at grid location (1,1).
+- There is one wumpus, 3 pits and 1 gold kept at randomly choosen rooms. The rooms at grid location of (0,1) and (1, 0) are initialy empty and the agent is in the room at grid location (0,0).
 
 # Implementation plan
 
@@ -134,7 +134,7 @@ Project major parts:
             A pair of ```int``` that inidicate the position of the ```room``` in the grid as ```(x,y)``` where ```x``` is the horizontal 
             distance and ```y``` is the vertical distance. 
 
-            The coordinates start with (1, 1) at the left bottom corner and counting increases verticaly up and horizontaly to
+            The coordinates start with (0, 0) at the left bottom corner and counting increases verticaly up and horizontaly to
             the right.
         
     - Constructor:
@@ -298,7 +298,7 @@ Project major parts:
                 // if there is wumpus in the room and the agent has arrow to use
                 if(wumpus_room.get(wumpus) and agent_status.remaining_arrow>0) { 
                     
-                    wumpus_room.set(wumpus, 0); // change the truth-value to "false"
+                    wumpus_room.set(wumpus, false); // change the truth-value to "false"
 
                     wumpus_status.living = false; // record that the wumpus is dead
                     
@@ -413,8 +413,8 @@ Project major parts:
             i.e:
             ```
             let room_id = (x,y) 
-                room_id is valid if 0 < x < 5 and 0 < y < 5
-                room_id is invalid if x < 1 or x > 4 or y < 1 or y > 4)
+                room_id is valid if -1 < x < 4 and -1 < y < 4
+                room_id is invalid if x < 0 or x > 3 or y < 0 or y > 3)
             ```
 
         - heared_scream():

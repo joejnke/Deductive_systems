@@ -10,22 +10,23 @@
 #include <utility>
 
 /**
-* Data structure to represent a single room that 
-* contain all truth value based data associated 
-* with a room.
+* Data structure to represent a single room which
+* has an ID to indicate its location in the grid
+* where it's contained in. The ID starts at
+* left-bottom corner with integer pair of (0, 0).
+* The room contains all truth value based data
+* associated with it. 
 * e.g.: pit, breeze, wumpus, stench, visited, gold
 */
 class room
 {
 private:
-    std::map<std::string, bool> _knowledge; // truth values for knowledge contained in a room
-    std::pair<int, int> _room_id;          // _room_id of the room. Assumes left-bottom corner as (x,y)=(1,1) and starting point.
+    std::map<std::string, bool> _knowledge; // truth value of knowledge in room
+    std::pair<int, int> _room_id;           // _room_id of the room.
 public:
-    /// Default constructor initializing the default_tv to -1 and all truth
-    /// values to this deafult value
+    /// Default constructor initializing _room_id to deafult value of (-1, -1)
     room();
-    /// Constructor initializing the default_tv to -1,
-    /// _room_id to input parameter and all truth values to this deafult value
+    /// Constructor initializing the _room_id to input parameter
     room(std::pair<int, int> room_id);
     /**
         *  @brief Getter of the _room_id class attribute.
@@ -38,29 +39,31 @@ public:
         */
     std::map<std::string, bool> get_knowledge();
     /**
-        *  @brief Getter of the truth value associated with the given knowledge_term.
-        *  @param knowledge_term String of the key of whose truth value is required. 
+        *  @brief Getter of the truth value associated with the knowledge_term.
+        *  @param knowledge_term String of the key of whose truth value to get.
         *  @return Bool
         */
     bool get_truth_value(std::string knowledge_term);
     /**
-        *  @brief Setter of the truth value associated with the given knowledge_term.
-        *  @param knowledge_term String of the key of whose truth value is to be set. 
+        *  @brief Setter of the truth value associated with the knowledge_term.
+        *  @param knowledge_term String of the key of whose truth value to set.
         *  @param tv Bool to set as truth value.
         * 
-        *  Set the truth value of a knowledge term to the given truth value if the
-        *  knowledge_term already exists, else it will create an entry in the
-        *  knowledge attribute with knowledge_term as key and the tv as value.
+        *  Set the truth value of a knowledge term to the given truth value if
+        *  the knowledge_term already exists, else it will create an entry in
+        *  the knowledge attribute with knowledge_term as key and the tv as
+        *  value.
         */
     void set_truth_value(std::string knowledge_term, bool tv);
     /**
         *  @brief Gets set of room_ids of valid neighbouring rooms.
         *  @return Set get_adjacents
         * 
-        *  Find the _room_id of all valid neighbouring rooms to the room and return
-        *  a set of these room_ids.
+        *  Find the _room_id of all valid neighbouring rooms to the room and
+        *  return a set of these room_ids.
         * 
-        *  Invalid neighbours are those outside a 4X4 grid of rooms. (e.g.: (-1,2)) 
+        *  Invalid neighbours are those outside a 4X4 grid of rooms.
+        *  (e.g.: (-1,2)) 
         */
     std::set<std::pair<int, int>> get_adjacents();
 };
