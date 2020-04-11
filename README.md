@@ -43,7 +43,37 @@ The **World** will be governed based on the following _rules_:
 - The agent has one arrow.
 - If the agent shoots an arrow into the room the wumpus is in, then the Wumpus dies.
 - If wumpus and agent are in the same room wumpus will kill the agent. 
-- There is one wumpus, 3 pits and 1 gold kept at randomly choosen rooms. The rooms at grid location of (1, 2) and
-(2, 1) are initialy empty and the agent is in the room at grid location (1,1).
+- There is one wumpus, 3 pits and 1 gold kept at randomly choosen rooms. The rooms at grid location of (0,1) and (1, 0) are initialy empty and the agent is in the room at grid location (0,0).
 
 [_here_](https://github.com/joejnke/Deductive_systems/blob/master/wumpus_world/components/README.md) _you can find the implemention plan._
+
+# Build and Install
+The project can be built using the comands below. The built executable runs only the test until the whole program is 
+implemented.
+
+_**Note:** The instructions below will be updated as the development proceeds._
+
+Perform the following steps at the shell prompt:
+> ```cd /to/project/root_dir```
+
+> ```mkdir build```
+
+> ```cd build```
+
+> ```cmake ..```
+
+> ```make```
+
+> ```sudo make install``` *# install in /usr/local*
+
+> ```make DESTDIR=/installation/path/ install``` *# install in user defined directory. e.g: ~/Desktop/wumpus*
+
+> ```wumpusTest``` # **run the unit test** *(if it is installed in /usr/local)*
+
+> ```~/Desktop/wumpus/usr/local/bin/wumpusTest``` # **run the unit test** *(if it is installed in ~/Desktop/wumpus/usr/local)*
+
+If the project is successfuly built and installed, then you will obtain such output:
+
+  > ```Running cxxtest tests (n tests).....OK!``` 
+
+where **n** is the number of tests performed.

@@ -7,83 +7,76 @@
 
 using namespace std;
 
+typedef std::pair<int, int> roomIdType;
+
 room::room()
 {
-    this->default_tv = -1;
-    this->knowledge = {{"breeze", this->default_tv},
-                       {"glitter", this->default_tv},
-                       {"pit", this->default_tv},
-                       {"stench", this->default_tv},
-                       {"visited", this->default_tv},
-                       {"wumpus", this->default_tv}};
+    _room_id = roomIdType(-1, -1); // default room id which is out of grid
 }
 
-room::room(std::pair<int, int> room_id)
+room::room(roomIdType room_id)
 {
-    this->room_id = room_id;
-
-    this->default_tv = -1;
-    this->knowledge = {{"breeze", this->default_tv},
-                       {"glitter", this->default_tv},
-                       {"pit", this->default_tv},
-                       {"stench", this->default_tv},
-                       {"visited", this->default_tv},
-                       {"wumpus", this->default_tv}};
+    _room_id = room_id;
 }
 
-std::pair<int, int> room::get_room_id()
+roomIdType room::get_room_id()
 {
-    return this->room_id;
+    return _room_id;
 }
 
-std::map<std::string, int> room::get_knowledge()
+std::map<std::string, bool> room::get_knowledge()
 {
-    return this->knowledge;
-}      
+    return _knowledge;
+}
 
 bool room::get_truth_value(std::string knowledge_term)
 {
-    if (this->knowledge.at(knowledge_term) == 0)
-        return false;
-
-    else if (this->knowledge.at(knowledge_term) == 1)
-        return true;
-
-    else
-        throw "truth value not yet set...";
+    return _knowledge.at(knowledge_term);
 }
 
 void room::set_truth_value(std::string knowledge_term, bool tv)
 {
-    try
+    if (_knowledge.find(knowledge_term) == _knowledge.end())
     {
-        if (tv)
-            this->knowledge.at(knowledge_term) = 1;
-        else
-            this->knowledge.at(knowledge_term) = 0;
+        _knowledge.emplace(knowledge_term, tv);
     }
-    catch(const std::out_of_range& e)
+
+    else
     {
-        std::cerr << e.what() << '\n';
+        _knowledge.at(knowledge_term) = tv;
     }
 }
 
 std::set<std::pair<int, int>> room::get_adjacents()
 {
-    std::set<std::pair<int, int>> adjacent_rooms_id;
+    std::set<roomIdType> adjacent_rooms_id;
 
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second + 1)); // insert upper neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first, this->room_id.second - 1)); // insert lower neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first - 1, this->room_id.second)); // insert left neighbour room
-    adjacent_rooms_id.insert(std::pair<int, int>(this->room_id.first + 1, this->room_id.second)); // insert right neighbour room
-
-    for (auto neighbour : adjacent_rooms_id)
+    if (_room_id.second + 1 < 4)
     {
-        // check if any of the neighbours is invalid (out of grid) and remove it from the set
-        if (neighbour.first > 4 or neighbour.first < 1 or neighbour.second > 4 or neighbour.second < 1)
-        {
-            adjacent_rooms_id.erase(neighbour);
-        }
+        // insert upper neighbouring room
+        adjacent_rooms_id.insert(roomIdType(_room_id.first,
+                                            _room_id.second + 1));
+    }
+
+    if (_room_id.second - 1 > -1)
+    {
+        // insert lower neighbour room
+        adjacent_rooms_id.insert(roomIdType(_room_id.first,
+                                            _room_id.second - 1));
+    }
+
+    if (_room_id.first + 1 < 4)
+    {
+        // insert right neighbour room
+        adjacent_rooms_id.insert(roomIdType(_room_id.first + 1,
+                                            _room_id.second));
+    }
+
+    if (_room_id.first - 1 > -1)
+    {
+        // insert left neighbour room
+        adjacent_rooms_id.insert(roomIdType(_room_id.first - 1,
+                                            _room_id.second));
     }
 
     return adjacent_rooms_id;

@@ -60,16 +60,15 @@ Project major parts:
     It will be implemented as a c++ class and will have:
    
     - Attributes:
-        - knowledge
-        - room_id
-        - default_tv
+        - _knowledge
+        - _room_id
 
     - Attributes description:
-        - knowledge:
+        - _knowledge:
 
             Container for the knowledge(states) of a room.
 
-            Knowledge will be represented using knowledge terms given below:
+            Knowledge will be represented using knowledge terms like those given below:
         
             - **_Pit_** => true if there is pit in the room.
             - **_Breeze_** => true if there is breeze in the room.
@@ -79,29 +78,18 @@ Project major parts:
             - **_Glitter_** => true if there is gold in the room.
 
             Can be implemented using c++ map datastructure. Knowledge terms will be used as key and corresponding
-            truth-values will be used as value in the map. Truth-values are the integers -1, 0 and 1, where:
-            - **-1** implies undetermined (not yet set) truth-value
-            - **0** implies the boolean "false"
-            - **1** implies the boolean "true"
+            truth-values will be used as value in the map.
             
-            > Note: The reason to use integers is because of the need to set default value during room object initialization.
-            Setting initial value to "true" or "false" is not advisable because the values make sense.
-            e.g.: setting Wumpus to "true" by default will initialize every new room having a wumpus.
+            A knowledge term won't be added in to ```_knowledge``` if its truth value is not known.
 
-        - room_id:
+        - _room_id:
 
             A pair of ```int``` that inidicate the position of the ```room``` in the grid as ```(x,y)``` where ```x``` is the horizontal 
             distance and ```y``` is the vertical distance. 
 
-            The coordinates start with (1, 1) at the left bottom corner and counting increases verticaly up and horizontaly to
+            The coordinates start with (0, 0) at the left bottom corner and counting increases verticaly up and horizontaly to
             the right.
         
-        - default_tv:
-
-            This attribute represents the default value for initializing ```knowledge_terms``` of a ```room```. 
-
-            Has a value of ```-1```, which represents that the ```knowledge_term``` is yet not assigned to a ```true``` or ```false``` value.
-
     - Constructor:
         - room()
         - room(room_id)
@@ -109,12 +97,11 @@ Project major parts:
     - Constructor description:
         - room():
             
-            Initialize ```default_tv``` to **-1** and all the six knowledge terms to this default value of **-1**.
+            Initialize ```_room_id``` attribute to ```(-1, -1)```.
         
         - room(room_id):
 
-            Initialize the _```room_id```_ attribute to the ```room_id``` input parameter and initialize all the six 
-            knowledge terms to a default value of **-1**.
+            Initialize the _```_room_id```_ attribute to the ```room_id``` input parameter.
 
     - Accessors:
         - get_truth_value(knowledge_term)
@@ -126,21 +113,16 @@ Project major parts:
     - Accessors description:
         - get_truth_value(knowledge_term):
 
-            Getter that use knowledge_term as key to return the truth value of the knowledge_term from the knowledge attribute.
+            Getter that use ```knowledge_term``` as key to return the truth value of the ```knowledge_term``` from 
+            the ```_knowledge``` attribute.
 
-            It maps truth-value(the integers -1, 0 or 1) of the given knowledge_term to the
-            corresponding values then return:
-            - **NaN** if -1
-            - the boolean **false** if 0
-            - the boolean **true** if 1
-
-            > Note: We might use **_-1_**, **_0_**, **_1_** as is with out the need to map them to **_NaN_**, **_False_**, **_True_**.
-            
         - set_truth_value(knowledge_term, tv):
 
             Sets the given ```knowledge_term``` to ```true``` or ```false``` as given by the ```tv``` parameter.
 
-            It maps the boolean ```tv``` to the corresponding int value.
+            It changes the truth value if the ```knowledge_term``` exists as key in the ```_knowledge``` attribute. 
+            Otherwise, it will create and add a new pair of ```knowledge_term``` and its truth value in to the 
+            attribute.
         
         - get_adjacents():
             
@@ -148,11 +130,11 @@ Project major parts:
 
         - get_room_id()
 
-            Return the ```room_id``` attribute.
+            Return the ```_room_id``` attribute.
 
         - get_knowledge()
 
-            Return the ```knowledge``` attribute.
+            Return the ```_knowledge``` attribute.
 
 2. **World**: The actual game world. It will contain the environment and all the components that will build up
    the game world.
@@ -269,7 +251,7 @@ Project major parts:
                 // if there is wumpus in the room and the agent has arrow to use
                 if(wumpus_room.get(wumpus) and agent_status.remaining_arrow>0) { 
                     
-                    wumpus_room.set(wumpus, 0); // change the truth-value to "false"
+                    wumpus_room.set(wumpus, false); // change the truth-value to "false"
 
                     wumpus_status.living = false; // record that the wumpus is dead
                     
@@ -384,8 +366,8 @@ Project major parts:
             i.e:
             ```
             let room_id = (x,y) 
-                room_id is valid if 0 < x < 5 and 0 < y < 5
-                room_id is invalid if x < 1 or x > 4 or y < 1 or y > 4)
+                room_id is valid if -1 < x < 4 and -1 < y < 4
+                room_id is invalid if x < 0 or x > 3 or y < 0 or y > 3)
             ```
 
         - heared_scream():
