@@ -47,19 +47,33 @@ The **World** will be governed based on the following _rules_:
 
 [_here_](https://github.com/joejnke/Deductive_systems/blob/master/wumpus_world/components/README.md) _you can find the implemention plan._
 
-# Build project
+# Build and Install
 The project can be built using the comands below. The built executable runs only the test until the whole program is 
 implemented.
 
 _**Note:** The instructions below will be updated as the development proceeds._
-```
-$ cd Deductive_systems/
 
-$ cxxtestgen --error-printer -o test/components/roomTest.cpp test/components/roomUTest.hpp
+Perform the following steps at the shell prompt:
+> ```cd /to/project/root_dir```
 
-$ cd wumpus_world/components/
+> ```mkdir build```
 
-$ g++ -o runnerTest ../../test/components/roomTest.cpp ../components/room.cpp -I$CXXTEST -I ../components/
+> ```cd build```
 
-$ ./runnerTest
-```
+> ```cmake ..```
+
+> ```make```
+
+> ```sudo make install``` *# install in /usr/local*
+
+> ```make DESTDIR=/installation/path/ install``` *# install in user defined directory. e.g: ~/Desktop/wumpus*
+
+> ```wumpusTest``` # **run the unit test** *(if it is installed in /usr/local)*
+
+> ```~/Desktop/wumpus/usr/local/bin/wumpusTest``` # **run the unit test** *(if it is installed in ~/Desktop/wumpus/usr/local)*
+
+If the project is successfuly built and installed, then you will obtain such output:
+
+  > ```Running cxxtest tests (n tests).....OK!``` 
+
+where **n** is the number of tests performed.
